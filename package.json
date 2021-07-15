@@ -1,0 +1,11 @@
+{
+  "name": "githubscraper",
+  "version": "1.0.0",
+  "description": "Scraps data from GitHub API",
+  "main": "GitHubScraper.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

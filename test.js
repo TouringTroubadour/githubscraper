@@ -1,4 +1,4 @@
-import GitHubScraper from "./js/GitHubScraper.js";
+const GitHubScraper = require("./js/GitHubScraper.js");
 
 getGithubData();
 

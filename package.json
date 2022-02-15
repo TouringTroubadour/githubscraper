@@ -4,7 +4,7 @@
   "description": "Scraps Data from GitHub API and allows you to extract release versions",
   "license": "MIT",
   "repository": "TouringTroubadour/githubscraper",
-  "main": "githubscraper.js",
-  "keywords": ["gituhscraper", "github", "scraper", "releases", "extractor"],
+  "main": "index.js",
+  "keywords": ["githubscraper", "github", "scraper", "releases", "extractor"],
   "type": "module"
 }

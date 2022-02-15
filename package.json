@@ -1,11 +1,10 @@
 {
-  "name": "githubscraper",
+  "name": "@troubadour/githubscraper",
   "version": "1.0.0",
-  "description": "Scraps data from GitHub API",
-  "main": "GitHubScraper.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC"
+  "description": "Scraps Data from GitHub API and allows you to extract release versions",
+  "license": "MIT",
+  "repository": "TouringTroubadour/githubscraper",
+  "main": "githubscraper.js",
+  "keywords": ["gituhscraper", "github", "scraper", "releases", "extractor"],
+  "type": "module"
 }

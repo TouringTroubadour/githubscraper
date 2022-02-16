@@ -13,9 +13,7 @@
     "extractor"
   ],
   "type": "module",
-  "devDependencies": {
-    "fs": "^0.0.1-security",
-    "https": "^1.0.0",
+  "dependencies": {
     "node-fetch": "^3.2.0"
   }
 }

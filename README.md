@@ -12,28 +12,29 @@ npm install @troubadour/githubscraper
 ## Usage
 
 ```javascript
-const githubscraper = require("@troubadour/githubscraper");
+import GitHubScraper from "@troubadour/githubscraper";
 
-// Downloads All Release Versions of a selected GitHub Repository
-async function extractRepoVersions() {
-  // Create new instance of GitHubScraper using GitHub API Key
-  const ghs = new GitHubScraper(
-    "API_KEY"
-  );
+getGithubData();
 
-  // Get List of Available Release Versions
-  const results = await ghs.getList(
+async function getGithubData() {
+  const GitHubAPI = new GitHubScraper(
+    "GET_API_KEY_FROM_GITHUB"
+  ); // See 'How to get a GitHub API Key' below
+
+  const results = await GitHubAPI.getList(
+    "USERNAME/REPOSITORY",
     "https://api.github.com/repos/USERNAME/REPOSITORY/tags"
   );
 
-  // Print List of Results to console
+  console.log(results.length);
+
   console.log(results);
 
-  // Download List of Results
-  ghs.downloadList(results, "OUTPUT_FOLDER");
-}
+  await GitHubAPI.downloadList("./Results/", results);
 
-extractRepoVersions();
+  console.log("Internal Ratelimit Information:");
+  console.log(GitHubAPI.getInternalRateLimitInformation());
+}
 ```
 
 ## How to get a GitHub API Key

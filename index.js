@@ -5,7 +5,7 @@ import fs from "fs";
 export default class GitHubScraper {
   /**
    * Initialise instance of GitHubScraper
-   * 
+   *
    * @constructor
    * @param {string} API_KEY Token Required to make authenticated requests to GitHub API
    */
@@ -23,7 +23,7 @@ export default class GitHubScraper {
 
   /**
    * Return Resonse Results from GitHubAPI
-   * 
+   *
    * @param {string} url URL required to fetch Response Promise from GitHub API
    * @returns {results} Data, Ratelimit Information and Links
    */
@@ -40,7 +40,7 @@ export default class GitHubScraper {
 
   /**
    * Fetch Response from GitHub API
-   * 
+   *
    * @param {string} url URL required to fetch Response Promise from GitHub API
    * @returns {Object} Data, Ratelimit Information and Links
    */
@@ -83,11 +83,45 @@ export default class GitHubScraper {
     return result;
   }
 
+  async fetchReleaseInformation(url) {
+    const response = await fetch(url);
+    const result = {
+      file: response.headers.get("content-disposition").split("filename=")[1],
+      size: response.headers.get("content-length"),
+    };
+    return result;
+  }
+
+  async fetchDownload(dest, id, repo, name, url) {
+    const response = await fetch(url, {
+      headers: {
+        "user-agent": "node.js",
+      },
+    });
+
+    let dir = `${dest}${repo.replace("/", "-")}`;
+    // console.log(dir);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, {
+        recursive: true,
+      });
+    }
+
+    if (!fs.existsSync(`${dir}/${name}.zip`)) {
+      const fileStream = fs.createWriteStream(`${dir}/${name}.zip`);
+      await new Promise((resolve, reject) => {
+        response.body.pipe(fileStream);
+        response.body.on("error", reject);
+        fileStream.on("finish", resolve);
+      });
+    }
+  }
+
   /**
    * Returns an Integer Value representing the total number of data responses from a URL.
    * Can be used for example to see how many releases a repository has.
-   * 
-   * @param {string} url 
+   *
+   * @param {string} url
    * @returns {number} Total Number of Data Responses from a URL.
    */
   async getTotal(url) {
@@ -125,12 +159,14 @@ export default class GitHubScraper {
 
   /**
    * Returns List of Repositories
-   * 
-   * @param {String} url GitHub Repository URL 
+   *
+   * @param {String} repo GitHub Repository
+   * @param {String} url GitHub Repository URL
    * @returns {resultsList} List of Repositories
    */
-  async getList(url) {
+  async getList(repo, url) {
     let firstURL = `${url}` + `?q=&per_page=100&page=${0}`;
+    console.log(firstURL);
     let resultsList = new Array();
     const firstResponse = await this.fetchResponse(firstURL);
     this.setInternalRatelimitInformation(
@@ -139,11 +175,13 @@ export default class GitHubScraper {
       firstResponse.ratelimit_remaining,
       firstResponse.ratelimit_reset
     );
-    // console.log(firstResponse);
+
     if (firstResponse.links == undefined) {
       if (firstResponse.data.length != undefined) {
         for (let i = 0; i < firstResponse.data.length; i++) {
           let value = {
+            repo: repo,
+            id: firstResponse.data[i].id,
             name: firstResponse.data[i].name,
             url: firstResponse.data[i].zipball_url,
           };
@@ -157,18 +195,23 @@ export default class GitHubScraper {
       const lastLink = firstResponse.links.last.value;
       for (let i = 0; i < lastLink; i++) {
         let newURL = `${url}` + `?q=&per_page=100&page=${i}`;
+        // console.log(newURL);
         const newResponse = await this.fetchResponse(newURL);
+        // console.log(newResponse);
         this.setInternalRatelimitInformation(
           newResponse.ratelimit_used,
           newResponse.ratelimit_limit,
           newResponse.ratelimit_remaining,
           newResponse.ratelimit_reset
         );
-        for (let j = 0; j < firstResponse.data.length; j++) {
+        for (let j = 0; j < newResponse.data.length; j++) {
           let value = {
-            name: firstResponse.data[j].name,
-            url: firstResponse.data[j].zipball_url,
+            repo: repo,
+            id: newResponse.data[j].id,
+            name: newResponse.data[j].name,
+            url: newResponse.data[j].zipball_url,
           };
+          console.log(`${value.id} ${value.name}`);
           resultsList.push(value);
         }
       }
@@ -178,31 +221,27 @@ export default class GitHubScraper {
 
   /**
    * Downloads a List of Repositories locally.
-   * 
-   * @param {Object} list List of Repositories 
+   *
+   * @param {Object} list List of Repositories
    * @param {String} dest Download Directory
    */
-  async downloadList(list, dest) {
+  async downloadList(dest, list) {
+    console.log("Download List: " + list.length);
     for (let i = 0; i < list.length; i++) {
-      const file = fs.createWriteStream(dest + `${list[i].name}`);
-      const request = https
-        .get(list[i].url, function (response) {
-          response.pipe(file);
-          file.on("finish", function () {
-            file.close(); // close() is async, call cb after close completes.
-          });
-        })
-        .on("error", function (err) {
-          // Handle errors
-          fs.unlink(dest); // Delete the file async. (But we don't check the result)
-          console.error(err);
-        });
+      let id = list[i].id;
+      let repo = list[i].repo;
+      let name = list[i].name;
+      let url = list[i].url;
+      console.log(
+        `Iter: ${i} Repo: ${repo} ID: ${id} Name: ${name}, URL: ${url}`
+      );
+      await this.fetchDownload(dest, id, repo, name, url);
     }
   }
 
   /**
    * Update Internal Ratelimit Information
-   * 
+   *
    * @param {number} used
    * @param {number} limit
    * @param {number} remaining
@@ -217,7 +256,7 @@ export default class GitHubScraper {
 
   /**
    * Return Internal Ratelimit Information
-   * 
+   *
    * @returns {internalRatelimitInformation}
    */
   getInternalRateLimitInformation() {
@@ -232,7 +271,7 @@ export default class GitHubScraper {
 
   /**
    * Update External Ratelimit Information
-   * 
+   *
    * @param {number} used
    * @param {number} limit
    * @param {number} remaining
@@ -247,7 +286,7 @@ export default class GitHubScraper {
 
   /**
    * Returns External Ratelimit Information
-   * 
+   *
    * @returns {externalRatelimitInformation} External Rate Limit Information
    */
   getExternalRateLimitInformation() {

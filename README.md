@@ -34,8 +34,24 @@ async function extractRepoVersions() {
 }
 
 extractRepoVersions();
-
 ```
+
+## How to get a GitHub API Key
+
+1. Go to Settings on your GitHub Profile
+2. Go to Developer Settings
+3. Go to Personal Access Tokens
+4. Press 'Generate new token'
+5. Add a Note describing the purpose of the token
+![Add a Note describing the purpose of the token](https://i.imgur.com/Q7OTdkz.png)
+6. Set an Expiratory Date for the token
+7. Select 'repo' under Select Scopes
+![Select 'repo' under Select Scopes](https://i.imgur.com/NILWKSW.png)
+8. Press 'Generate token'
+![Press 'Generate token'](https://i.imgur.com/WtI6uu8.png)
+9. Copy your new Personal Access Token (And save a Copy too!)
+![Copy your new Personal Access Token](https://i.imgur.com/ejhDjWS.png)
+10. Use your new Personal Access Token in your code! (Refer to the Example Above!)
 
 ## License
 

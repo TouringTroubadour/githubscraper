@@ -5,6 +5,17 @@
   "license": "MIT",
   "repository": "TouringTroubadour/githubscraper",
   "main": "index.js",
-  "keywords": ["githubscraper", "github", "scraper", "releases", "extractor"],
-  "type": "module"
+  "keywords": [
+    "githubscraper",
+    "github",
+    "scraper",
+    "releases",
+    "extractor"
+  ],
+  "type": "module",
+  "devDependencies": {
+    "fs": "^0.0.1-security",
+    "https": "^1.0.0",
+    "node-fetch": "^3.2.0"
+  }
 }

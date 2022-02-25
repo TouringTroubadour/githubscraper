@@ -46,8 +46,8 @@ async function getGithubData() {
 5. Add a Note describing the purpose of the token
 ![Add a Note describing the purpose of the token](https://i.imgur.com/Q7OTdkz.png)
 6. Set an Expiratory Date for the token
-7. Select 'repo' under Select Scopes
-![Select 'repo' under Select Scopes](https://i.imgur.com/NILWKSW.png)
+7. Select 'public_repo' under 'repo' under Select scopes
+![Select 'public_repo' under 'repo' under Select scopes](https://i.imgur.com/NILWKSW.png)
 8. Press 'Generate token'
 ![Press 'Generate token'](https://i.imgur.com/WtI6uu8.png)
 9. Copy your new Personal Access Token (And save a Copy too!)

@@ -191,6 +191,40 @@ export default class GitHubScraper {
   }
 
   /**
+   * 
+   * @param {*} repo 
+   * @param {*} url 
+   * @param {*} idNum Number of Specific Release (Latest is 0) 
+   * @returns 
+   */
+  async getLatestRelease(repo, url, idNum) {
+    let firstURL = `${url}` + `?q=&per_page=100&page=${0}`;
+    console.log(firstURL);
+    let resultsList = new Array();
+    const repoResponse = await this.fetchResponse(firstURL);
+    this.setInternalRatelimitInformation(
+      repoResponse.ratelimit_used,
+      repoResponse.ratelimit_limit,
+      repoResponse.ratelimit_remaining,
+      repoResponse.ratelimit_reset
+    );
+
+    if (repoResponse.links == undefined) {
+      if (repoResponse.data.length != undefined) {
+          let value = {
+            repo: repo,
+            id: repoResponse.data[idNum].id,
+            name: repoResponse.data[idNum].name,
+            url: repoResponse.data[idNum].zipball_url,
+          };
+        return value;
+      } else {
+        return 0;
+      }
+    }
+  }
+
+  /**
    * Returns List of Repositories
    *
    * @param {String} repo GitHub Repository

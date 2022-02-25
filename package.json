@@ -1,6 +1,6 @@
 {
   "name": "@troubadour/githubscraper",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Scraps Data from GitHub API and allows you to extract release versions",
   "license": "MIT",
   "repository": "TouringTroubadour/githubscraper",
